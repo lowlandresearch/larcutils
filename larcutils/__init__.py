@@ -1,8 +1,8 @@
 from importlib import reload
 
-from . import common
+from . import common, yaml, logging, rest
 
-mods = [common]
+mods = [common, yaml, logging, rest]
 
 for m in mods:
     reload(m)
