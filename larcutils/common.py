@@ -389,10 +389,13 @@ def only_if_key(key, func, d):
         return func(d)
     return d
 
-def first(seq):
-    if seq:
+def first(seq, *, default=Null):
+    try:
         return _first(seq)
-    return Null
+    except StopIteration:
+        pass
+    return default
+
 maybe_first = first
 
 def first_true(seq):
@@ -425,6 +428,7 @@ def get(i, indexable, default=None):
     if hasattr(indexable, 'get'):
         return indexable.get(i, default)
     return _get(i, indexable, default)
+getitem = get
 
 @curry
 def getmany(keys, indexable, default=None):
@@ -802,6 +806,9 @@ def remove_comments(lines):
         filter(lambda l: not l.startswith('#')),
     )
 
+def help_text(s):
+    return pipe(s.splitlines(), map(lambda s: s.strip()), ' '.join)
+
 def xlsx_pbcopy(content):
     if not content.endswith('\n'):
         content += '\n'
@@ -1044,3 +1051,13 @@ def bfs_tree(G, source, reverse=False, depth_limit=None):
 @curry
 def contains(value, obj):
     return value in obj
+
+@curry
+def match_d(match, d, *, default=Null):
+    if set(d).issuperset(set(match)):
+        if all(re.search(match[k], d[k]) for k in match):
+            return merge(*(
+                re.search(match[k], d[k]).groupdict()
+                for k in match
+            ))
+    return default
