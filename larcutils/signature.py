@@ -75,7 +75,7 @@ def signature_from_dict(sig):
 from_dict = signature_from_dict
 
 def signature_to_dict(sig):
-    return merge(sig._asdict(), {'python': sig.python._asdict()})
+    return merge(sig._asdict(), {'python': dict(sig.python._asdict())})
 to_dict = signature_to_dict
 
 def signature_to_tuple(sig):
